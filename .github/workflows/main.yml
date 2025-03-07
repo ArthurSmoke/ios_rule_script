@@ -30,7 +30,7 @@ jobs:
     
     - name: Add Gitea remote
       run: |
-        git remote add gitea https://${{ secrets.GITEA_TOKEN }}@git.xiaolong.fun:7890/yangcong/ios_rule_script.git
+        git remote add gitea https://${{ secrets.GITEA_TOKEN }}@git.xiaolong.fun:7890/yangcong/CashRules.git
 
     - name: Push master branch
       run: |
