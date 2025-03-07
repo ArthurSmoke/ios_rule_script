@@ -1,0 +1,37 @@
+name: Mirror Master to Gitea
+
+on:
+  schedule:
+    - cron: "0 18 * * *"  # 北京时间每天2点（UTC+8）
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
+      with:
+        ref: master  # 明确指定检出master分支
+        fetch-depth: 0
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+
+    - name: Sync upstream master
+      run: |
+        git remote add upstream https://github.com/blackmatrix7/ios_rule_script.git
+        git fetch upstream master
+        git checkout master
+        git merge upstream/master
+        git push origin master
+    
+    - name: Add Gitea remote
+      run: |
+        git remote add gitea https://${{ secrets.GITEA_TOKEN }}@git.xiaolong.fun:7890/yangcong/ios_rule_script.git
+
+    - name: Push master branch
+      run: |
+        git push gitea master --force  # 仅推送master分支
